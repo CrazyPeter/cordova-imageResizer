@@ -1,17 +1,3 @@
-//
-//  ImageResize.m
-//  ImageResizer PhoneGap / Cordova Plugin
-//
-//  Created by Raanan Weber on 02.01.12.
-//
-//  The software is open source, MIT Licensed.
-//  Copyright (c) 2012-2013 webXells GmbH , http://www.webxells.com. All rights reserved.
-//
-// Using the following Libraries (Big thanks to the developers!)
-// Image Scaling : http://iphonedevelopertips.com/graphics/how-to-scale-an-image-using-an-objective-c-category.html . Source is added with respected copyright.
-// NSData Base64 : NSData Base64 extension by Dave Winer. http://colloquy.info/project/browser/trunk/NSDataAdditions.h?rev=1576,  Source is added with original copyright.
-//
-
 #import "ImageResize.h"
 #import "UIImage+Scale.h"
 #import "NSData+Base64.h"
@@ -60,9 +46,9 @@
         CGFloat heightFactor = height / img.size.height;
         CGFloat scaleFactor = 0.0;
         if (widthFactor == 0.0) {
-        	   scaleFactor = heightFactor;
+            scaleFactor = heightFactor;
         } else if (heightFactor == 0.0) {
-        	   scaleFactor = widthFactor;
+            scaleFactor = widthFactor;
         } else if (widthFactor > heightFactor) {
             scaleFactor = heightFactor; // scale to fit height
         } else {
@@ -104,7 +90,7 @@
             imageDataObject = UIImagePNGRepresentation(scaledImage);
         }
         
-        NSString *encodedString = [imageDataObject base64EncodingWithLineLength:0];
+        NSString *encodedString = [imageDataObject base64EncodedStringWithOptions:0];
         NSDictionary* result = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:encodedString, newWidthObj, newHeightObj, nil] forKeys:[NSArray arrayWithObjects: @"imageData", @"width", @"height", nil]];
         
         if (encodedString != nil) {
@@ -124,7 +110,7 @@
     //Load the image
     UIImage *img = nil;
     if([imageDataType isEqualToString:@"base64Image"]==YES) {
-        img = [[UIImage alloc] initWithData:[NSData dataWithBase64EncodedString:imageData]];
+        img = [[UIImage alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:imageData options:0]];
     } else {
         img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfFile:[self getUrl:imageData]]];
     }
@@ -225,12 +211,10 @@
         title = NSLocalizedString(@"Error", @"");
         message = [error description];
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    [alert show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:okAction];
+    [self.viewController presentViewController:alert animated:YES completion:nil];
 }
 
 @end

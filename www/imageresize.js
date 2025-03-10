@@ -48,6 +48,8 @@ ImageResizer.prototype.resizeImage = function(success, fail, imageData, width, h
     if (!options) {
         options = {};
     }
+    imageData = imageData.replace(/^data:image\/(png|jpeg);base64,/, '');
+
     
     var params = {
         data: imageData,

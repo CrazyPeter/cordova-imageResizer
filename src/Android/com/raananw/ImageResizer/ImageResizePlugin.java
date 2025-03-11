@@ -1,13 +1,13 @@
 /**
  * An Image Resizer Plugin for Cordova/PhoneGap.
- * 
+ *
  * More Information : https://github.com/raananw/
- * 
+ *
  * The android version of the file stores the images using the local storage.
- * 
+ *
  * The software is open source, MIT Licensed.
  * Copyright (C) 2012, webXells GmbH All Rights Reserved.
- * 
+ *
  * @author Raanan Weber, webXells GmbH, http://www.webxells.com
  */
 package com.raananw;
@@ -21,6 +21,7 @@ import java.io.OutputStream;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.io.InputStream;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -28,9 +29,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
@@ -104,6 +107,10 @@ public class ImageResizePlugin extends CordovaPlugin {
                 if ("file".equals(scheme)) {
                     File imageFile = new File(uri);
                     bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                } else if ("content".equals(scheme)) {
+                    bmp = BitmapFactory.decodeStream(
+                            cordova.getActivity().getContentResolver().openInputStream(Uri.parse(imageData)), null,
+                            options);
                 } else {
                     bmp = BitmapFactory.decodeStream(uri.toURL().openStream(), null, options);
                 }
